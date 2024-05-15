@@ -50,142 +50,158 @@ const formSchema = z.object({
     .optional(),
 });
 
+type FormData = z.infer<typeof formSchema>;
+
 function App() {
-  const form = useForm({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       customerName: "",
-      customerType: "",
-      criticalityLevel: "",
+      customerType: undefined,
+      criticalityLevel: undefined,
       escalationNecessary: false,
       additionalComments: undefined,
     },
   });
 
-  function onSubmit(values) {
+  function onSubmit(values: FormData) {
     console.log(values);
+    alert(JSON.stringify(values, null, 2));
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-6 w-96 m-auto py-10"
-      >
-        <FormField
-          control={form.control}
-          name="customerName"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Nombre del cliente</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="ej: Universidad Autónoma de Mazatlán"
-                  {...field}
-                />
-              </FormControl>
-              {fieldState.error && (
-                <FormMessage>{fieldState.error.message}</FormMessage>
-              )}
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="customerType"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Tipo de cliente</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+    <main className="flex flex-col gap-6 w-[min(600px,85vw)] m-auto py-10">
+      <h1 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+        Formulario de gestión inicial de ticket por CS
+      </h1>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4"
+        >
+          <FormField
+            control={form.control}
+            name="customerName"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Nombre del cliente</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el tipo de cliente" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="estrella">Estrella</SelectItem>
-                  <SelectItem value="vaca">Vaca</SelectItem>
-                  <SelectItem value="perro">Perro</SelectItem>
-                  <SelectItem value="interrogante">Interrogante</SelectItem>
-                </SelectContent>
-              </Select>
-              {fieldState.error && (
-                <FormMessage>{fieldState.error.message}</FormMessage>
-              )}
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="criticalityLevel"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Nivel de criticidad</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el nivel de criticidad" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="muy alto">Muy Alto</SelectItem>
-                  <SelectItem value="alto">Alto</SelectItem>
-                  <SelectItem value="medio">Medio</SelectItem>
-                  <SelectItem value="bajo">Bajo</SelectItem>
-                  <SelectItem value="muy bajo">Muy bajo</SelectItem>
-                </SelectContent>
-              </Select>
-              {fieldState.error && (
-                <FormMessage>{fieldState.error.message}</FormMessage>
-              )}
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="escalationNecessary"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Escalamiento</FormLabel>
-              <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
+                  <Input
+                    placeholder="ej: Universidad Autónoma de Mazatlán"
+                    {...field}
                   />
                 </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>¿Es necesario escalar?</FormLabel>
+                {fieldState.error && (
+                  <FormMessage>{fieldState.error.message}</FormMessage>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="customerType"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Tipo de cliente</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona el tipo de cliente" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="estrella">⭐️ Estrella</SelectItem>
+                    <SelectItem value="vaca">🐮 Vaca</SelectItem>
+                    <SelectItem value="perro">🐶 Perro</SelectItem>
+                    <SelectItem value="interrogante">
+                      ❓ Interrogante
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                {fieldState.error && (
+                  <FormMessage>{fieldState.error.message}</FormMessage>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="criticalityLevel"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Nivel de criticidad</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecciona el nivel de criticidad" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="muy alto">Muy Alto</SelectItem>
+                    <SelectItem value="alto">Alto</SelectItem>
+                    <SelectItem value="medio">Medio</SelectItem>
+                    <SelectItem value="bajo">Bajo</SelectItem>
+                    <SelectItem value="muy bajo">Muy bajo</SelectItem>
+                  </SelectContent>
+                </Select>
+                {fieldState.error && (
+                  <FormMessage>{fieldState.error.message}</FormMessage>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="escalationNecessary"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Escalamiento</FormLabel>
+                <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>¿Es necesario escalar?</FormLabel>
+                  </div>
                 </div>
-              </div>
-              {fieldState.error && (
-                <FormMessage>{fieldState.error.message}</FormMessage>
-              )}
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="additionalComments"
-          render={({ field, fieldState }) => (
-            <FormItem>
-              <FormLabel>Comentarios adicionales</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Añade comentarios adicionales"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              {fieldState.error && (
-                <FormMessage>{fieldState.error.message}</FormMessage>
-              )}
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Enviar</Button>
-      </form>
-    </Form>
+                {fieldState.error && (
+                  <FormMessage>{fieldState.error.message}</FormMessage>
+                )}
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="additionalComments"
+            render={({ field, fieldState }) => (
+              <FormItem>
+                <FormLabel>Comentarios adicionales</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Añade comentarios adicionales"
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                {fieldState.error && (
+                  <FormMessage>{fieldState.error.message}</FormMessage>
+                )}
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Enviar</Button>
+        </form>
+      </Form>
+    </main>
   );
 }
 
